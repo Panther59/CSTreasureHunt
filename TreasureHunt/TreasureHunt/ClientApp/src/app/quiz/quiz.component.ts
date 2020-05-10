@@ -70,9 +70,11 @@ export class QuizComponent implements OnInit, OnDestroy {
   }
 
   getMyPosition() {
-    const pos = this.results.find(x => x.user.id === this.storageService.userId);
-    if (pos) {
-      return pos.rank;
+    if (this.results) {
+      const pos = this.results.find(x => x.user.id === this.storageService.userId);
+      if (pos) {
+        return pos.rank;
+      }
     }
   }
 
