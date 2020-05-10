@@ -30,58 +30,14 @@ namespace TreasureHunt.Common
 			this.httpContextAccessor = httpContextAccessor;
 		}
 
-		/// <summary>
-		/// Gets the LoginID
-		/// </summary>
-		public int? LoginID
-		{
-			get
-			{
-				var idText = this.httpContextAccessor.HttpContext.User.Claims
-					.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
-				if (int.TryParse(idText, out int id))
-				{
-					return id;
-				}
-				else
-				{
-					return null;
-				}
-			}
-		}
-
-		/// <inheritdoc />
-		public int? StoreID
-		{
-			get
-			{
-				if (this.httpContextAccessor.HttpContext.User.Claims.Any(x => x.Type == JwtRegisteredClaimNames.Typ && x.Value == "Store"))
-				{
-					var idText = this.httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "StoreID")?.Value;
-					if (int.TryParse(idText, out int id))
-					{
-						return id;
-					}
-					else
-					{
-						return null;
-					}
-				}
-				else
-				{
-					return null;
-				}
-			}
-		}
-
 		/// <inheritdoc />
 		public int? UserID
 		{
 			get
 			{
-				if (this.httpContextAccessor.HttpContext.User.Claims.Any(x => x.Type == JwtRegisteredClaimNames.Typ && x.Value == "User"))
+				if (this.httpContextAccessor.HttpContext.User?.Claims != null)
 				{
-					var idText = this.httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserID")?.Value;
+					var idText = this.httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 					if (int.TryParse(idText, out int id))
 					{
 						return id;

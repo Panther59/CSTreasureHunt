@@ -96,11 +96,7 @@ namespace TreasureHunt.Data
                     .HasName("IX_Quiz_Seq")
                     .IsUnique();
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.QuizId).ValueGeneratedOnAdd();
+                entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Title)
                     .IsRequired()
@@ -115,9 +111,7 @@ namespace TreasureHunt.Data
 
             modelBuilder.Entity<Quizzes>(entity =>
             {
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.EndTime).HasColumnType("datetime");
 
@@ -126,8 +120,6 @@ namespace TreasureHunt.Data
                 entity.Property(e => e.Title)
                     .IsRequired()
                     .HasMaxLength(500);
-
-                entity.Property(e => e.Type).ValueGeneratedOnAdd();
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -1,9 +1,11 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TreasureHunt.Services;
 
 namespace TreasureHunt
 {
@@ -11,7 +13,7 @@ namespace TreasureHunt
 	{
 		public Startup(IConfiguration configuration)
 		{
-			Configuration = configuration;
+			this.Configuration = configuration;
 		}
 
 		public IConfiguration Configuration { get; }
@@ -20,11 +22,22 @@ namespace TreasureHunt
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddControllersWithViews();
+
+			this.AddServiceDependencies(services);
+
 			// In production, the Angular files will be served from this  directory
 			services.AddSpaStaticFiles(configuration =>
 			{
 				configuration.RootPath = "ClientApp/dist";
 			});
+		}
+
+		private void AddServiceDependencies(IServiceCollection services)
+		{
+			services.AddScoped<IMapper, Mapper>();
+			services.AddScoped<IQuizzesService, QuizzesService>();
+			services.AddScoped<IUsersService, UsersService>();
+			services.AddScoped<IResultService, ResultService>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

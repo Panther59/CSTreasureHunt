@@ -1,27 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using TreasureHunt.Data;
-using TreasureHunt.Models;
+﻿// <copyright file="QuizzesService.cs" company="Ayvan">
+// Copyright (c) 2020 All Rights Reserved
+// </copyright>
+// <author>UTKARSHLAPTOP\Utkarsh</author>
+// <date>2020-05-10</date>
 
 namespace TreasureHunt.Services
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Threading.Tasks;
+	using Microsoft.EntityFrameworkCore;
+	using TreasureHunt.Common;
+	using TreasureHunt.Data;
+	using TreasureHunt.Models;
+
+	/// <summary>
+	/// Defines the <see cref="QuizzesService" />.
+	/// </summary>
 	public class QuizzesService : IQuizzesService
 	{
-		private readonly TreasureHuntDBContext treasureHuntDBContext;
+		/// <summary>
+		/// Defines the mapper.
+		/// </summary>
 		private readonly IMapper mapper;
 
+		/// <summary>
+		/// Defines the session.
+		/// </summary>
+		private readonly ISession session;
+
+		/// <summary>
+		/// Defines the treasureHuntDBContext.
+		/// </summary>
+		private readonly TreasureHuntDBContext treasureHuntDBContext;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="QuizzesService"/> class.
+		/// </summary>
+		/// <param name="session">The session<see cref="ISession"/>.</param>
+		/// <param name="treasureHuntDBContext">The treasureHuntDBContext<see cref="TreasureHuntDBContext"/>.</param>
+		/// <param name="mapper">The mapper<see cref="IMapper"/>.</param>
 		public QuizzesService(
+			ISession session,
 			TreasureHuntDBContext treasureHuntDBContext,
 			IMapper mapper)
 		{
+			this.session = session;
 			this.treasureHuntDBContext = treasureHuntDBContext;
 			this.mapper = mapper;
 		}
 
+		/// <inheritdoc />
 		public async Task<List<Quiz>> GetActiveQuizzes()
 		{
 			var list = await this.treasureHuntDBContext.Quizzes.Where(x => x.Active).ToListAsync();
@@ -31,15 +61,17 @@ namespace TreasureHunt.Services
 			return quizzes;
 		}
 
-		public async Task<Question> GetNextQuestion(User user, int quizId)
+		/// <inheritdoc />
+		public async Task<Question> GetNextQuestion(int quizId)
 		{
-			var question = await this.treasureHuntDBContext.Questions.FromSqlRaw("GetNextQuestion @participantId = {0}, @quizId = {1}", user.ID, quizId)
+			var question = await this.treasureHuntDBContext.Questions.FromSqlRaw("GetNextQuestion @participantId = {0}, @quizId = {1}", this.session.UserID.Value, quizId)
 				.FirstOrDefaultAsync();
 
 			return this.mapper.MapQuestion(question);
 		}
 
-		public async Task<Question> SubmitAnswer(User user, Answer answer)
+		/// <inheritdoc />
+		public async Task<Question> SubmitAnswer(Answer answer)
 		{
 			var question = this.treasureHuntDBContext.Questions
 				.Include(x => x.Answers)
@@ -53,7 +85,7 @@ namespace TreasureHunt.Services
 					var attempt = new Attempts()
 					{
 						AnswerId = null,
-						ParticipantId = user.ID.Value,
+						ParticipantId = this.session.UserID.Value,
 						ProgressedOn = DateTime.Now,
 						QuestionId = question.Id,
 						Skipped = true
@@ -70,7 +102,7 @@ namespace TreasureHunt.Services
 						var attempt = new Attempts()
 						{
 							AnswerId = answerObj.Id,
-							ParticipantId = user.ID.Value,
+							ParticipantId = this.session.UserID.Value,
 							ProgressedOn = DateTime.Now,
 							QuestionId = question.Id,
 							Skipped = false
@@ -86,7 +118,7 @@ namespace TreasureHunt.Services
 				}
 			}
 
-			return await GetNextQuestion(user, question.QuizId);
+			return await GetNextQuestion(question.QuizId);
 		}
 	}
 }
