@@ -1,0 +1,37 @@
+.question{
+  background-color:#88add8e6;
+  padding: 10px;
+}
+
+.summary{
+  background-color:#88add8e6;
+  padding: 10px;
+}
+.results{
+  background-color:#88add8e6;
+  padding: 10px;
+  margin-top: 30px;
+}
+
+.ranker {
+  display: table;
+  progress{
+
+  }
+}
+progress {
+  -webkit-appearance: none;
+}
+progress::-webkit-progress-bar-value {
+  -webkit-appearance: none;
+  background: orangered;
+}
+
+.rankerProgress {
+  display: table-cell;
+}
+
+.rankerName {
+  display: table-cell;
+  min-width: 250px;
+}

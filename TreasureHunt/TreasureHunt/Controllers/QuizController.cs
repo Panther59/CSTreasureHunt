@@ -16,7 +16,7 @@ namespace TreasureHunt.Controllers
 	/// <summary>
 	/// Defines the <see cref="QuizController" />.
 	/// </summary>
-	[Route("api/[controller]")]
+	[Route("api/[controller]/[action]")]
 	[ApiController]
 	[LoginAuthorize]
 	public class QuizController : ControllerBase
@@ -68,11 +68,11 @@ namespace TreasureHunt.Controllers
 		/// </summary>
 		/// <param name="quizId">The quizId<see cref="int"/>.</param>
 		/// <returns>The <see cref="Task{Question}"/>.</returns>
-		[HttpGet]
-		[ActionName("{quizId}/nextQuestion")]
-		public async Task<Question> GetNextQuestion(int quizId)
+		[HttpPost]
+		[ActionName("nextQuestion")]
+		public async Task<Question> GetNextQuestion(Quiz quiz)
 		{
-			var question = await this.quizzesService.GetNextQuestion(quizId);
+			var question = await this.quizzesService.GetNextQuestion(quiz.ID.Value);
 
 			return question;
 		}

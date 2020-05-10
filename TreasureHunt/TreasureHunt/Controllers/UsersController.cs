@@ -14,9 +14,9 @@ using TreasureHunt.Services;
 
 namespace TreasureHunt.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+	[Route("api/[controller]/[action]")]
+	public class UsersController : ControllerBase
     {
 		private readonly IConfiguration configuration;
 		private readonly IUsersService usersService;
@@ -50,8 +50,8 @@ namespace TreasureHunt.Controllers
 		}
 
 		[HttpPost]
-		[ActionName("user")]
-		public async Task<AuthenticateResponse> AuthenticateUserAsync(User user)
+		[ActionName("auth")]
+		public async Task<AuthenticateResponse> AuthenticateAsync(User user)
 		{
 			var dbUser = await this.usersService.CreateUser(user);
 
@@ -62,8 +62,8 @@ namespace TreasureHunt.Controllers
 
 			return new AuthenticateResponse
 			{
-				Token = this.GenerateJSONWebToken(user),
-				User = user,
+				Token = this.GenerateJSONWebToken(dbUser),
+				User = dbUser,
 			};
 		}
 

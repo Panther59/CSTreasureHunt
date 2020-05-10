@@ -1,0 +1,9 @@
+.loginContainer {
+  margin: 3px;
+  padding: 10px;
+  background-color: rgba(173, 216, 230, 0.741);
+}
+
+.inputLable {
+    min-width: 100px;
+}

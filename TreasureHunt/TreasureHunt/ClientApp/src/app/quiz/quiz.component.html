@@ -1,0 +1,31 @@
+<div *ngIf="question" class="question">
+  <div>{{'Question ' + question.sequance}}</div>
+  <div>
+    <h1>{{question.title}}</h1>
+  </div>
+  <div *ngIf="answer">
+    <label>Answer</label>
+    <input [(ngModel)]="answer.title" />
+  </div>
+  <div>
+    <button (click)="submitAnswer()">Submit</button>
+  </div>
+</div>
+<div *ngIf="noMoreQuestions" class="summary">
+  <div>
+  <h4>Congratulation !!! You have Reached to Treasure.</h4>
+</div>
+<div>
+  <h3>You are at Position {{getMyPosition()}}</h3>
+</div>
+</div>
+
+<div *ngIf="results" class="results">
+  <h1>Leaderboard</h1>
+  <div class="ranker" *ngFor="let r of results">
+    <h6 class="rankerName">{{r.rank}}.  {{r.user.name}}</h6>
+    <div class="rankerProgress">
+    <progress [value]="r.answered" [max]="r.total" > </progress>
+  </div>
+  </div>
+</div>

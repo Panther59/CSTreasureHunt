@@ -25,9 +25,10 @@ namespace TreasureHunt.Services
 		{
 			var dbUser = await this.treasureHuntDBContext.Participants.FirstOrDefaultAsync(x => x.LoginName == user.LoginName);
 
-			if (dbUser != null)
+			if (dbUser == null)
 			{
 				dbUser = this.mapper.MapUser(user);
+				dbUser.CreatedOn = DateTime.Now;
 				this.treasureHuntDBContext.Participants.Add(dbUser);
 				await this.treasureHuntDBContext.SaveChangesAsync();
 			}

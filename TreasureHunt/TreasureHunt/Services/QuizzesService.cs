@@ -64,8 +64,25 @@ namespace TreasureHunt.Services
 		/// <inheritdoc />
 		public async Task<Question> GetNextQuestion(int quizId)
 		{
-			var question = await this.treasureHuntDBContext.Questions.FromSqlRaw("GetNextQuestion @participantId = {0}, @quizId = {1}", this.session.UserID.Value, quizId)
-				.FirstOrDefaultAsync();
+			var quiz = await this.treasureHuntDBContext.Quizzes.Where(x => x.Id == quizId).FirstOrDefaultAsync();
+
+			if (quiz.Active == false)
+			{
+				throw new Exception("Quiz is not made available");
+			}
+			else if (quiz.StartTime > DateTime.Now )
+			{
+				throw new Exception("Quiz is not started yet");
+			}
+			else if (quiz.EndTime < DateTime.Now)
+			{
+				throw new Exception("Quiz got over");
+			}
+
+			var question = this.treasureHuntDBContext.Questions
+				.FromSqlRaw("GetNextQuestion @participantId = {0}, @quizId = {1}", this.session.UserID.Value, quizId)
+				.AsEnumerable()
+				.FirstOrDefault();
 
 			return this.mapper.MapQuestion(question);
 		}

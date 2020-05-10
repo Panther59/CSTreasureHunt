@@ -47,7 +47,7 @@ namespace TreasureHunt.Services
 		{
 			return user == null ? null : new Participants
 			{
-				Id = user.ID.Value,
+				Id = user.ID ?? 0,
 				LoginName = user.LoginName,
 				Name = user.Name
 			};
